@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c5db885f29bd564bcdfdcf07821dc8d3bea1f4c0d03d18fed038861ecc79698c
+-- hash: aacd5a509097051fb6e0b681a45e39b15a0307c89f9267da139124663abd095e
 
 name:           toyLexerRAE
 version:        0.1.0.0
@@ -26,8 +26,6 @@ source-repository head
   location: https://github.com/githubuser/toyLexerRAE
 
 library
-  exposed-modules:
-      Lib
   other-modules:
       Paths_toyLexerRAE
   hs-source-dirs:
