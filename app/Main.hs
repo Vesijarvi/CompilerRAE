@@ -2,36 +2,37 @@ module Main where
 
 import Data.Char
 
-data Operator = ADD | SUB | MUL | DIV | SPLIT
-    deriving (Show, Eq)
-
-data Parentesis = LBR | RBR
+data Operator = Add | Sub | Mul | Div | SPLIT
     deriving (Show, Eq)
 
 data Token = TokOp Operator
            | TokNum Int
-           | TokBR Parentesis
+           | TokLParen 
+           | TokRParen
+           | TokSep     -- %
     deriving (Show, Eq)
 
 operator :: Char -> Operator
-operator c | c == '+' = ADD
-           | c == '-' = SUB
-           | c == '*' = MUL
-           | c == '/' = DIV
-           | c == '%' = SPLIT
-
-parentesis :: Char -> Parentesis 
-parentesis c | c == '(' = LBR
-             | c == ')' = RBR
+operator c | c == '+' = Add
+           | c == '-' = Sub
+           | c == '*' = Mul
+           | c == '/' = Div
 
 tokenize :: String -> [Token]
 tokenize [] = []
 tokenize (c : cs) 
-    | elem c "+-*/%" = TokOp (operator c) : tokenize cs
-    | elem c "()" = TokBR (parentesis c) : tokenize cs   
-    | isDigit c  = TokNum (digitToInt c) : tokenize cs
+    | elem c "+-*/" = TokOp (operator c) : tokenize cs
+    | c == '%'   = TokSep : tokenize cs
+    | c == '('   = TokLParen : tokenize cs
+    | c == ')'   = TokRParen : tokenize cs
+    | isDigit c  = number c cs
     | isSpace c  = tokenize cs
     | otherwise  = error $ "Cannot tokenize " ++ [c]
+
+number :: Char -> [Char] -> [Token]
+number c cs = 
+   let (digs, cs') = span isDigit cs in
+   TokNum (read (c : digs)) : tokenize cs'
 
 
 main :: IO ()
