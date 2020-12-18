@@ -129,26 +129,23 @@ accept (t:ts) = ts
 --           | RatNode Tree Tree   -- node to save ratioal number
 --           | NumNode Int
 
--- evaluate :: Tree -> Tree
--- evaluate (RatNode x y) = RatNode x y
--- evaluate (SumNode op left right) = 
---     let (lft_x, lft_y)  = evaluate left 
---         (rght_x, rght_y) = evaluate right 
---     in
---         case op of 
---             Add -> RatNode (lft_x + rght_x) (lft_y + rght_y)
---             Sub -> RatNode (lft_x - rght_x) (lft_y - rght_y) 
+evaluate :: Tree -> Tree
+evaluate (RatNode x y) = RatNode x y
+evaluate (SumNode op left right) = 
+    let (RatNode lft_x lft_y)  = evaluate left 
+        (RatNode rght_x rght_y) = evaluate right 
+    in
+        case op of 
+            Add -> RatNode (lft_x * rght_y + rght_x * lft_y) (lft_y * rght_y)
+            Sub -> RatNode (lft_x * rght_y - rght_x * lft_y) (lft_y * rght_y) 
 
--- evaluate (ProdNode op left right) = 
---     let (lft_x, lft_y)  = evaluate left 
---         (rght_x, rght_y) = evaluate right 
---     in
---         case op of 
---             Add -> RatNode (lft_x * rght_x) (lft_y * rght_y)
---             Sub -> RatNode (lft_x / rght_x) (lft_y / rght_y) 
-
-
-            
+evaluate (ProdNode op left right) = 
+    let (RatNode lft_x lft_y)  = evaluate left 
+        (RatNode rght_x rght_y) = evaluate right 
+    in
+        case op of 
+            Add -> RatNode (lft_x * rght_x) (lft_y * rght_y)
+            Sub -> RatNode (lft_x / rght_x) (lft_y / rght_y) 
 
 main :: IO ()
 main = do putStrLn "             ^  -  ^ \n\
