@@ -23,21 +23,21 @@ operator c | c == '+' = Add
 
 ------ Start Lexer  ------
 
-tokenize :: String -> [Token]
-tokenize [] = []
-tokenize (c : cs) 
-    | elem c "+-*/" = TokOp (operator c) : tokenize cs
-    | c == '%'   = TokSep : tokenize cs
-    | c == '('   = TokLParen : tokenize cs
-    | c == ')'   = TokRParen : tokenize cs
+tokenizer :: String -> [Token]
+tokenizer [] = []
+tokenizer (c : cs) 
+    | elem c "+-*/" = TokOp (operator c) : tokenizer cs
+    | c == '%'   = TokSep : tokenizer cs
+    | c == '('   = TokLParen : tokenizer cs
+    | c == ')'   = TokRParen : tokenizer cs
     | isDigit c  = number c cs
-    | isSpace c  = tokenize cs
+    | isSpace c  = tokenizer cs
     | otherwise  = error $ "Cannot tokenize " ++ [c]
 
 number :: Char -> [Char] -> [Token]
 number c cs = 
    let (digs, cs') = span isDigit cs in
-   TokNum (read (c : digs)) : tokenize cs'
+   TokNum (read (c : digs)) : tokenizer cs'
 
 data Tree = SumNode Operator Tree Tree
           | ProdNode Operator Tree Tree
@@ -69,7 +69,7 @@ parser toks = let (tree, toks') = expression toks
 
 expression :: [Token] -> (Tree, [Token])
 expression toks = 
-    let (termTree, toks') = factor toks
+    let (termTree, toks') = term toks
     in 
         case lookAhead toks' of
             -- Term op[+-] Expression
@@ -84,7 +84,7 @@ expression toks =
             _ -> (termTree, toks')
 
 -- Term       <- LBR Factor % Factor LBR
---             | LBR Expression RBR
+--             | LBR Expression RBR   ! NOT IMPLEMENTED YET
 term :: [Token] -> (Tree, [Token])
 term toks = 
     case lookAhead toks of
@@ -117,6 +117,9 @@ accept [] = error "Nothing to accept"
 accept (t:ts) = ts
 
 ------ End Parser ------
+evaluate :: Tree -> (a, b)
+
+
 
 main :: IO ()
 main = do putStrLn "             ^  -  ^ \n\
@@ -128,5 +131,5 @@ main = do putStrLn "             ^  -  ^ \n\
                    \   Example: (1%2) + (3%4) * (5%6)"
           -- inputString <- getLine
           -- putStrLn ("Your input is \"" ++ inputString ++ "\"!")
-          -- (print . tokenize) "(3)" 
-          (print . parser . tokenize) "(3)"  
+          -- (print . tokenizer) "(3)" 
+          (print . parser . tokenizer) "(1%2) + (3%4) * (5%6) - (2%1) / (1%2)"  
