@@ -41,8 +41,7 @@ number c cs =
 
 data Tree = SumNode Operator Tree Tree
           | ProdNode Operator Tree Tree
-          | RatNode Tree Tree   -- node to save ratioal number
-          | NumNode Int
+          | RatNode Int Int   -- node to save ratioal number
     deriving Show
 
 ------ End Lexer ------
@@ -52,9 +51,8 @@ data Tree = SumNode Operator Tree Tree
 Expression <- Term Op(*/) Expression
             | Term Op(+/) Expression
             | Term
-Term       <- LBR Factor % Factor LBR
+Term       <- LBR Num % Num LBR
             | LBR Expression RBR
-Factor     <- Num 
      
 -}
 
@@ -83,30 +81,37 @@ expression toks =
             -- Term
             _ -> (termTree, toks')
 
--- Term       <- LBR Factor % Factor LBR
+-- Term       <- LBR Int % Int LBR
 --             | LBR Expression RBR   ! NOT IMPLEMENTED YET
 term :: [Token] -> (Tree, [Token])
 term toks = 
     case lookAhead toks of
-        TokLParen ->
-            let (factTree, toks') = factor (accept toks) 
-            in
-                case lookAhead toks' of
-                    TokSep -> 
-                        let (factTree', toks'') = factor (accept toks')
-                        in
-                            case lookAhead toks'' of 
-                                TokRParen -> (RatNode factTree factTree', accept toks'')
-                                _ -> error $ "Parse error on Token: " ++ show toks'' 
-                    _ -> error $ "Parse error on Token: " ++ show toks'
-        _ -> error $ "Parse error on Token: " ++ show toks
+        TokLParen -> 
+            let toks' = accept toks
+            in case lookAhead toks' of 
+                -- ( Num % Num )
+                (TokNum x) -> 
+                    let toks'' = accept toks'
+                    in case lookAhead toks'' of
+                        TokSep -> 
+                            let toks''' = accept toks''
+                            in case lookAhead toks''' of
+                                (TokNum y) ->
+                                    let toks'''' = accept toks'''
+                                    in case lookAhead toks'''' of 
+                                        TokRParen -> (RatNode x y, accept toks'''')
+                                        _ -> error $ "Parse error on Token: " ++ show toks''''
+                                _ -> error $ "Parse error on Token: " ++ show toks'''
+                        _ -> error $ "Parse error on Token: " ++ show toks''
+                -- ( exp )
+                _ -> 
+                    let (expTree, toks'') = expression (accept toks')
+                    in 
+                       if lookAhead toks'' == TokRParen 
+                       then (expTree, accept toks'')
+                       else error "Missing right parenthesis"
 
--- Factor     <- Num 
-factor :: [Token] -> (Tree, [Token])
-factor toks = 
-    case lookAhead toks of 
-        (TokNum x) -> (NumNode x, accept toks)
-        _ -> error $ "Parse error on token: " ++ show toks
+        _ -> error $ "Parse error on Token: " ++ show toks
 
 lookAhead :: [Token] -> Token
 lookAhead [] = TokEnd
@@ -115,11 +120,35 @@ lookAhead (c:cs) = c
 accept :: [Token] -> [Token]
 accept [] = error "Nothing to accept"
 accept (t:ts) = ts
-
 ------ End Parser ------
-evaluate :: Tree -> (a, b)
+
+------ Start Evaluate ------
+
+-- data Tree = SumNode Operator Tree Tree
+--           | ProdNode Operator Tree Tree
+--           | RatNode Tree Tree   -- node to save ratioal number
+--           | NumNode Int
+
+-- evaluate :: Tree -> Tree
+-- evaluate (RatNode x y) = RatNode x y
+-- evaluate (SumNode op left right) = 
+--     let (lft_x, lft_y)  = evaluate left 
+--         (rght_x, rght_y) = evaluate right 
+--     in
+--         case op of 
+--             Add -> RatNode (lft_x + rght_x) (lft_y + rght_y)
+--             Sub -> RatNode (lft_x - rght_x) (lft_y - rght_y) 
+
+-- evaluate (ProdNode op left right) = 
+--     let (lft_x, lft_y)  = evaluate left 
+--         (rght_x, rght_y) = evaluate right 
+--     in
+--         case op of 
+--             Add -> RatNode (lft_x * rght_x) (lft_y * rght_y)
+--             Sub -> RatNode (lft_x / rght_x) (lft_y / rght_y) 
 
 
+            
 
 main :: IO ()
 main = do putStrLn "             ^  -  ^ \n\
