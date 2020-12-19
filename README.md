@@ -24,3 +24,10 @@ Please explain your design in the report, for example:
 - Data Structures you defined
 - Idioms or Design Patterns you used
 - ....
+
+## How to run code 
+
+1. Clone to local: `git clone https://github.com/yppan/toyLexerRAE/`
+2. `$ cd toyLexerRAE`
+3. `$ stack build`
+4. `$ stack run`
