@@ -39,13 +39,12 @@ number c cs =
    let (digs, cs') = span isDigit cs in
    TokNum (read (c : digs)) : tokenize cs'
 
+------ End Lexer ------
+
 data Tree = SumNode Operator Tree Tree
           | ProdNode Operator Tree Tree
-          | UnaryNode Operator Tree
           | RatNode Int Int   -- node to save ratioal number
     deriving Show
-
------- End Lexer ------
 
 {-
 Expression <- Term Op(+/) Expression
@@ -57,10 +56,12 @@ factor     <- LBR Num % Num LBR
             | LBR Expression RBR
 -}
 
--- Expr    ← Sum
--- Sum     ← Product (('+' / '-') Product)*
--- Product ← Value (('*' / '/') Value)*
--- Value   ← [0-9]+ / '(' Expr ')'
+{-
+    Expr <- Ractioal
+          | Expr op[+-] Expr
+          | Expr op[*/] Expr
+          | '(' Expr ')' 
+-}
 
 ------ Start parse ------
 parse :: [Token] -> Tree
