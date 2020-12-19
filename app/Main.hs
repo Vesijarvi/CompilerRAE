@@ -23,21 +23,21 @@ operator c | c == '+' = Add
 
 ------ Start Lexer  ------
 
-tokenizer :: String -> [Token]
-tokenizer [] = []
-tokenizer (c : cs) 
-    | elem c "+-*/" = TokOp (operator c) : tokenizer cs
-    | c == '%'   = TokSep : tokenizer cs
-    | c == '('   = TokLParen : tokenizer cs
-    | c == ')'   = TokRParen : tokenizer cs
+tokenize :: String -> [Token]
+tokenize [] = []
+tokenize (c : cs) 
+    | elem c "+-*/" = TokOp (operator c) : tokenize cs
+    | c == '%'   = TokSep : tokenize cs
+    | c == '('   = TokLParen : tokenize cs
+    | c == ')'   = TokRParen : tokenize cs
     | isDigit c  = number c cs
-    | isSpace c  = tokenizer cs
+    | isSpace c  = tokenize cs
     | otherwise  = error $ "Cannot tokenize " ++ [c]
 
 number :: Char -> [Char] -> [Token]
 number c cs = 
    let (digs, cs') = span isDigit cs in
-   TokNum (read (c : digs)) : tokenizer cs'
+   TokNum (read (c : digs)) : tokenize cs'
 
 data Tree = SumNode Operator Tree Tree
           | ProdNode Operator Tree Tree
@@ -56,10 +56,10 @@ Term       <- LBR Num % Num LBR
      
 -}
 
------- Start Parser ------
+------ Start parse ------
 
-parser :: [Token] -> Tree
-parser toks = let (tree, toks') = expression toks
+parse :: [Token] -> Tree
+parse toks = let (tree, toks') = expression toks
               in 
                   if null toks' 
                   then tree
@@ -120,7 +120,7 @@ lookAhead (c:cs) = c
 accept :: [Token] -> [Token]
 accept [] = error "Nothing to accept"
 accept (t:ts) = ts
------- End Parser ------
+------ End parse ------
 
 ------ Start Evaluate ------
 
@@ -136,8 +136,16 @@ evaluate (SumNode op left right) =
         (RatNode rght_x rght_y) = evaluate right 
     in
         case op of 
-            Add -> RatNode (lft_x * rght_y + rght_x * lft_y) (lft_y * rght_y)
-            Sub -> RatNode (lft_x * rght_y - rght_x * lft_y) (lft_y * rght_y) 
+            Add -> 
+                let a = lft_x * rght_y + rght_x * lft_y
+                    b = lft_y * rght_y
+                    d = gcd a b 
+                in RatNode (div a d) (div b d)
+            Sub -> 
+                let a = lft_x * rght_y - rght_x * lft_y
+                    b = lft_y * rght_y
+                    d = gcd a b 
+                in RatNode (div a d) (div b d)
 
 evaluate (ProdNode op left right) = 
     let (RatNode lft_x lft_y)  = evaluate left 
@@ -170,6 +178,6 @@ main = do putStrLn "             ^  -  ^ \n\
                    \   Example: (1%2) + (3%4) * (5%6)"
           -- inputString <- getLine
           -- putStrLn ("Your input is \"" ++ inputString ++ "\"!")
-          -- (print . tokenizer) "(3)" 
-          (print . parser . tokenizer) "(1%2) + (3%4) * (5%6) - (2%1) / (1%2)"
-          (print . evaluate . parser . tokenizer) "(1%2) + (3%4) * (5%6) - (2%1) / (1%2)"
+          -- (print . tokenize) "(3)" 
+        --   (print . parse . tokenize) "(1%2) + (3%4) * (5%6) - (2%1) / (1%2)"
+          (print . evaluate . parse . tokenize) "(1%2) + (3%4) * (5%6)"
