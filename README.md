@@ -27,7 +27,8 @@ Please explain your design in the report, for example:
 
 ## How to run code 
 
-1. Clone to local: `git clone https://github.com/yppan/toyLexerRAE/`
+1. Clone to local: 
+   `$ git clone https://github.com/yppan/toyLexerRAE/`
 2. `$ cd toyLexerRAE`
 3. `$ stack build`
 4. `$ stack run`
