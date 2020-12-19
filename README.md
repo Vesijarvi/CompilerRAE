@@ -20,6 +20,7 @@ Example:
 
 Please explain your design in the report, for example:
 
-Overview of your code
-Data Structures you defined
-Idioms or Design Patterns you used
+- Overview of your code
+- Data Structures you defined
+- Idioms or Design Patterns you used
+- ....
