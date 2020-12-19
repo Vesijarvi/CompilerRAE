@@ -143,9 +143,22 @@ evaluate (ProdNode op left right) =
     let (RatNode lft_x lft_y)  = evaluate left 
         (RatNode rght_x rght_y) = evaluate right 
     in
-        case op of 
-            Add -> RatNode (lft_x * rght_x) (lft_y * rght_y)
-            Sub -> RatNode (lft_x / rght_x) (lft_y / rght_y) 
+        case op of
+            Mul -> 
+                let 
+                    a = (lft_x * rght_x)
+                    b = (lft_y * rght_y)
+                    d = gcd a b
+                in RatNode (div a d) (div b d) 
+            Div -> 
+                let -- ( a % b ) / ( c % d)
+                    a = (lft_x * rght_y)
+                    b = (rght_x * lft_y)
+                    d = gcd a b
+                in 
+                    if b == 0
+                    then error "divide by zero"
+                    else RatNode (div a d) (div b d)
 
 main :: IO ()
 main = do putStrLn "             ^  -  ^ \n\
@@ -158,4 +171,5 @@ main = do putStrLn "             ^  -  ^ \n\
           -- inputString <- getLine
           -- putStrLn ("Your input is \"" ++ inputString ++ "\"!")
           -- (print . tokenizer) "(3)" 
-          (print . parser . tokenizer) "(1%2) + (3%4) * (5%6) - (2%1) / (1%2)"  
+          (print . parser . tokenizer) "(1%2) + (3%4) * (5%6) - (2%1) / (1%2)"
+          (print . evaluate . parser . tokenizer) "(1%2) + (3%4) * (5%6) - (2%1) / (1%2)"
