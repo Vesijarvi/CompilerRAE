@@ -34,6 +34,34 @@ The code is to find the difference between implmenting a simple Compiler in Hask
 
 ## Data structure I defined 
 
+Define in Lexer.hs:
+``` Haskell 
+data Operator = Add | Sub | Mul | Div | SPLIT
+    deriving (Show, Eq)
+
+data Token = TokOp Operator
+           | TokNum Int
+           | TokLParen 
+           | TokRParen
+           | TokSep     -- %
+           | TokEnd
+    deriving (Show, Eq)
+
+operator :: Char -> Operator
+operator c | c == '+' = Add
+           | c == '-' = Sub
+           | c == '*' = Mul
+           | c == '/' = Div
+```
+
+Define in Parser.hs:
+```Haskell
+data Tree = SumNode Operator Tree Tree
+          | ProdNode Operator Tree Tree
+          | RatNode Int Int   -- node to save ratioal number
+    deriving Show
+```
+
 
 ## How to run code 
 
