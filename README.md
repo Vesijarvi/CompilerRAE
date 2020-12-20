@@ -56,7 +56,9 @@ data Tree = SumNode Operator Tree Tree
           | RatNode Int Int   -- node to save ratioal number
     deriving Show
 ```
-## Idioms or Design Patterns you used
+## Idioms 
+
+Simple Top-Down Parsing
 
 ## How to run code 
 
