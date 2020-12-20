@@ -28,7 +28,8 @@ Please explain your design in the report, for example:
 
 The code is to find the difference between implmenting a simple Compiler in Haskell and C, which one is a functional programming language and another is imperative.
 
-- For Haskell part, I reference this [link](https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell) for basic implementation. - For C part, you can check out my other repositoris. 
+- For Haskell part, I reference this [link](https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell) for basic implementation. 
+- For C part, you can check out my other repositoris. 
 - For Rust, checkout [sheccr](https://github.com/yppan/sheccr)
 
 ## Data structure I defined 
