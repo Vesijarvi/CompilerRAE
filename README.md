@@ -19,11 +19,6 @@ Example:
 - `(1%2) + (3%4) * (5%6) - (2%1) / (1%2)` will evaluates to `(-23) % 8`
 - `(1%1) / (2%0)` will report a “divide by zero” error
 
-Please explain your design in the report, for example:
-
-- Idioms or Design Patterns you used
-- ....
-
 ## Overview of the toyLexerRAE
 
 The code is to find the difference between implmenting a simple Compiler in Haskell and C, which one is a functional programming language and another is imperative.
@@ -61,7 +56,7 @@ data Tree = SumNode Operator Tree Tree
           | RatNode Int Int   -- node to save ratioal number
     deriving Show
 ```
-
+## Idioms or Design Patterns you used
 
 ## How to run code 
 
