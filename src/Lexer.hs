@@ -13,13 +13,13 @@ data Token = TokOp Operator
            | TokEnd
     deriving (Show, Eq)
 
+------ Start Lexer  ------
 operator :: Char -> Operator
 operator c | c == '+' = Add
            | c == '-' = Sub
            | c == '*' = Mul
            | c == '/' = Div
 
------- Start Lexer  ------
 tokenize :: String -> [Token]
 tokenize [] = []
 tokenize (c : cs) 
