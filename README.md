@@ -4,7 +4,7 @@
 
 This is a small project for Programming Language Design 2020, NCU.
 
-## Rational Arithmetic Evaluation
+## Problem Disscription - Rational Arithmetic Evaluation
 
 In this assignment, you are asked to implement a arithmetic evaluator with rational numbers in Haskell.
 
@@ -21,10 +21,18 @@ Example:
 
 Please explain your design in the report, for example:
 
-- Overview of your code
-- Data Structures you defined
 - Idioms or Design Patterns you used
 - ....
+
+## Overview of the toyLexerRAE
+
+The code is to find the difference between implmenting a simple Compiler in Haskell and C, which one is a functional programming language and another is imperative.
+
+For Haskell part, I reference this [link](https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell) for basic implementation. And as for C part, you can check out my other repositoris. 
+(For Rust, checkout [sheccr](https://github.com/yppan/sheccr)
+
+## Data structure I defined 
+
 
 ## How to run code 
 
