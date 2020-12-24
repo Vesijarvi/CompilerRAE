@@ -2,7 +2,7 @@
 
 ## About 
 
-This is a small project for Programming Language Design 2020, NCU.  
+This is a small project for Programming Language Design.
   
 Lexer, Parser and Evaluater for Rational Numbers
 
